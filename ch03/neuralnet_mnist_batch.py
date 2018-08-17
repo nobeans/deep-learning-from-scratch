@@ -11,6 +11,15 @@ def sigmoid(x):
     return 1 / (1 + np.exp(-x))
 
 def softmax(a):
+    # バッチ処理に対応するため、行列もサポートする必要がある。
+    if a.ndim == 2:
+        # 2次元の行列の場合は転置行列を使っていい感じに計算する。
+        a_T = a.T
+        c = np.max(a_T, axis=0)
+        exp_a_T = np.exp(a_T - c) # for avoiding an overflow
+        sum_exp_a_T = np.sum(exp_a_T, axis=0)
+        y = exp_a_T / sum_exp_a_T
+        return y.T
     c = np.max(a)
     exp_a = np.exp(a - c) # for avoiding an overflow
     sum_exp_a = np.sum(exp_a)
